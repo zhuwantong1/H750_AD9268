@@ -383,35 +383,41 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 				HAL_GPIO_WritePin(GPIOB, PL_Pin, GPIO_PIN_RESET);//第一个上升沿先拉低，开始传输数据
 				/* PL拉低，捕获到PL之后就关闭adc_clk，tim2 ch1 让D0-D15不更新数据，只处理并转串 */
 				//HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
-				printf("Data_Counter = %d\r\n", Data_Counter);
+				//printf("Data_Counter = %d\r\n", Data_Counter);
 			}
 			else if(Data_Counter >= 1&&Data_Counter<=16)
 			{
+				  HAL_GPIO_WritePin(GPIOB, PL_Pin, GPIO_PIN_SET);
 					if(Data_Counter<=8)
 					{
+						  //printf("Data_Counter = %d\r\n", 8-Data_Counter);
 							INTERRUPT_FLAG_TIMER3[8-Data_Counter] = HAL_GPIO_ReadPin(DATA_S_GPIO_Port, DATA_S_Pin);
 					}
 					else if(Data_Counter>8)
 					{
+						  //printf("Data_Counter = %d\r\n", 24-Data_Counter);
 							INTERRUPT_FLAG_TIMER3[24-Data_Counter] = HAL_GPIO_ReadPin(DATA_S_GPIO_Port, DATA_S_Pin);
 					}
+					//printf("Data_Counter = %d\r\n", Data_Counter);
 			}
 			else if(Data_Counter >=17&&Set_Count_Flag==0)
 			//如果已经接收到了16位数据，那就拉高PL，这时去处理数据，处理完再拉低   
 			{
 					
-					HAL_GPIO_WritePin(GPIOB, PL_Pin, GPIO_PIN_SET);
+					
 					/** 捕获到PL为高之后就打开adc_clk，让D0-D15更新数据，不处理并转串 **/
 					HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);				
 					//Data_Counter = 0;
 					for(int i=0;i<16;i++)
 					{
 							ans =  (ans<<1) + INTERRUPT_FLAG_TIMER3[15-i];
+						  //ans =  (1<<8)-1;
 					}
 					//HAL_UART_Transmit(&huart1, (const uint8_t *) &ans, sizeof(ans), HAL_MAX_DELAY);
 					Set_Count_Flag=1;
+					//printf("\r\n");
 					printf("%d\r\n", ans);
-//					printf("Set_Count_Flag = %d\r\n", Set_Count_Flag);
+					//printf("Set_Count_Flag = %d\r\n", Set_Count_Flag);
 					HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 			}
 			else
@@ -422,7 +428,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 			
 			
 				
-//			printf("Data_Counter = %d\r\n", Data_Counter);
+//  		printf("Data_Counter = %d\r\n", Data_Counter);
 			Data_Counter++;
 		}
 		

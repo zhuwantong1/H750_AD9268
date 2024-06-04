@@ -3,7 +3,7 @@
 <title>Static Call Graph - [H750_SPI_AD9268\H750_SPI_AD9268.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image H750_SPI_AD9268\H750_SPI_AD9268.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Tue Jun 04 11:49:21 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Tue Jun 04 14:21:32 2024
 <BR><P>
 <H3>Maximum Stack Usage =        336 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -739,12 +739,11 @@ Global Symbols
 <LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SPI_IRQHandler
 </UL>
 
-<P><STRONG><a name="[ac]"></a>HAL_GPIO_EXTI_Callback</STRONG> (Thumb, 70 bytes, Stack size 8 bytes, gpio.o(i.HAL_GPIO_EXTI_Callback))
+<P><STRONG><a name="[ac]"></a>HAL_GPIO_EXTI_Callback</STRONG> (Thumb, 62 bytes, Stack size 8 bytes, gpio.o(i.HAL_GPIO_EXTI_Callback))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = HAL_GPIO_EXTI_Callback &rArr; HAL_NVIC_DisableIRQ
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_NVIC_EnableIRQ
 <LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_NVIC_DisableIRQ
-<LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
 </UL>
 <BR>[Called By]<UL><LI><a href="#[a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_EXTI_IRQHandler
 </UL>
@@ -768,13 +767,12 @@ Global Symbols
 <LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_GPIO_Init
 </UL>
 
-<P><STRONG><a name="[dd]"></a>HAL_GPIO_ReadPin</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, stm32h7xx_hal_gpio.o(i.HAL_GPIO_ReadPin))
+<P><STRONG><a name="[dc]"></a>HAL_GPIO_ReadPin</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, stm32h7xx_hal_gpio.o(i.HAL_GPIO_ReadPin))
 <BR><BR>[Called By]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_IC_CaptureCallback
 </UL>
 
 <P><STRONG><a name="[a6]"></a>HAL_GPIO_WritePin</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, stm32h7xx_hal_gpio.o(i.HAL_GPIO_WritePin))
 <BR><BR>[Called By]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_IC_CaptureCallback
-<LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_EXTI_Callback
 <LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_GPIO_Init
 <LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI1_WriteBytes
 <LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AD9268_WriteByte
@@ -1094,14 +1092,14 @@ Global Symbols
 <LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_TIM1_Init
 </UL>
 
-<P><STRONG><a name="[db]"></a>HAL_TIM_IC_CaptureCallback</STRONG> (Thumb, 228 bytes, Stack size 8 bytes, tim.o(i.HAL_TIM_IC_CaptureCallback))
+<P><STRONG><a name="[db]"></a>HAL_TIM_IC_CaptureCallback</STRONG> (Thumb, 218 bytes, Stack size 8 bytes, tim.o(i.HAL_TIM_IC_CaptureCallback))
 <BR><BR>[Stack]<UL><LI>Max Depth = 36<LI>Call Chain = HAL_TIM_IC_CaptureCallback &rArr; HAL_TIM_PWM_Start &rArr; TIM_CCxChannelCmd
 </UL>
-<BR>[Calls]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
+<BR>[Calls]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
 <LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_NVIC_EnableIRQ
 <LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_PWM_Start
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_PWM_Start
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_IRQHandler
 </UL>
@@ -1199,7 +1197,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_IRQHandler
 </UL>
 
-<P><STRONG><a name="[de]"></a>HAL_TIM_PWM_Start</STRONG> (Thumb, 314 bytes, Stack size 16 bytes, stm32h7xx_hal_tim.o(i.HAL_TIM_PWM_Start))
+<P><STRONG><a name="[dd]"></a>HAL_TIM_PWM_Start</STRONG> (Thumb, 314 bytes, Stack size 16 bytes, stm32h7xx_hal_tim.o(i.HAL_TIM_PWM_Start))
 <BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = HAL_TIM_PWM_Start &rArr; TIM_CCxChannelCmd
 </UL>
 <BR>[Calls]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_CCxChannelCmd
@@ -1488,7 +1486,7 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = TIM_CCxChannelCmd
 </UL>
 <BR>[Called By]<UL><LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_IC_Start_IT
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_PWM_Start
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_PWM_Start
 </UL>
 
 <P><STRONG><a name="[d7]"></a>TIM_ETR_SetConfig</STRONG> (Thumb, 22 bytes, Stack size 12 bytes, stm32h7xx_hal_tim.o(i.TIM_ETR_SetConfig))
@@ -1562,7 +1560,7 @@ Global Symbols
 
 <P><STRONG><a name="[12f]"></a>__1printf$1</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printf1.o(i.__0printf$1), UNUSED)
 
-<P><STRONG><a name="[dc]"></a>__2printf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printf1.o(i.__0printf$1))
+<P><STRONG><a name="[de]"></a>__2printf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printf1.o(i.__0printf$1))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = __2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_IC_CaptureCallback
@@ -1597,7 +1595,7 @@ Global Symbols
 <LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_SPI1_Init
 <LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_GPIO_Init
 <LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init_AD9268
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_PWM_Start
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_PWM_Start
 <LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Init
 <LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemClock_Config
 <LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PeriphCommonClock_Config

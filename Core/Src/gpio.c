@@ -113,8 +113,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			/** 捕获ADC_clk，此处归零,来丿个就弿始一个周期，当pl拉高时结束，pl圿74clk计数刿16的时候拉髿**/
 		//HAL_TIM_IC_Stop_IT(&htim4, TIM_CHANNEL_1);
 		Set_Count_Flag=0;	
-		Data_Counter=0;
-		HAL_GPIO_WritePin(GPIOB, PL_Pin, GPIO_PIN_RESET);//第一个上升沿先拉低，开始传输数据
+		Data_Counter=-1;
+		//HAL_GPIO_WritePin(GPIOB, PL_Pin, GPIO_PIN_RESET);//第一个上升沿先拉低，开始传输数据
 		//HAL_TIM_IC_Start_IT(&htim4, TIM_CHANNEL_1); 	
 		//printf("Set_Count_Flag_gpio %d \r\n",Set_Count_Flag);
 	}
