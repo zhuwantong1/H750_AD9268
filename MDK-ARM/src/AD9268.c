@@ -1,35 +1,50 @@
 #include "AD9268.h"
 #include "usart.h"
-
+#define receive_len  1
 unsigned char SPI_TxBuf[256];
 unsigned char SPI_RxBuf[16];
 unsigned char SPI1_ReadBytes(unsigned char RegAddr, unsigned char *ReadBuf)
 {
-    CS_ADC_LOW();//首先使能片选
-    SPI_TxBuf[0] = 0X80;
-		SPI_TxBuf[1] = RegAddr;
-		
-    HAL_SPI_Transmit(&hspi1, SPI_TxBuf, 2, 100);//发送设备地址,这里的命令是去读设备的寄存器
-    HAL_SPI_Receive(&hspi1, ReadBuf, sizeof (ReadBuf), 100);
-		HAL_StatusTypeDef status;
-		status = HAL_SPI_Receive(&hspi1, ReadBuf, sizeof(ReadBuf), 100);
-		CS_ADC_HIGH();//拉高片选
+       HAL_StatusTypeDef status;
+
+    // 首先使能片选
+    CS_ADC_LOW();
+    delay_us(20);
 	
-		if (status == HAL_OK) {
-			// 接收成功
-			printf("SPI Read Successful: ");
-			for (int i = 0; i < sizeof(ReadBuf); i++) {
-					printf("%d ", ReadBuf[i]);
-					
-			}
-			printf("%d ", sizeof(ReadBuf));
-			printf("\r\n");
-		} else {
-			// 接收失败
-			printf("SPI Read Failed\r\n");
-		}
+    // 准备发送数据
+    SPI_TxBuf[0] = 0X80; // 设置读命令
+    SPI_TxBuf[1] = RegAddr; // 设置寄存器地址
     
+    // 发送读命令和寄存器地址
+    status = HAL_SPI_Transmit(&hspi1, SPI_TxBuf, 2, 100);
+    if (status != HAL_OK) {
+        CS_ADC_HIGH();
+        printf("SPI Transmit Failed\r\n");
+        return 1; // 传输失败，返回错误
+    }
+		
+    // 接收寄存器数据
+    status = HAL_SPI_Receive(&hspi1, ReadBuf, receive_len, 100);
+		
+		delay_us(20);
+    CS_ADC_HIGH(); // 拉高片选
+
+    // 检查接收状态
+    if (status == HAL_OK) {
+        // 接收成功
+        // printf("SPI Read Successful: ");
+        for (unsigned int i = 0; i < receive_len; i++) {
+            printf("0x%02X ", ReadBuf[i]);
+        }
+        printf("\r\n");
+    } else {
+        // 接收失败
+        printf("SPI Read Failed\r\n");
+    }
+
     return 0;
+    
+    
 }
 unsigned char SPI1_WriteBytes(unsigned char RegAddr, const unsigned char *WriteBuf, unsigned char Len)//spi写寄存器
 {
@@ -56,31 +71,42 @@ void AD9268_WriteByte(unsigned char RegAddr, unsigned char *WriteBuf, unsigned c
 
 /*************************AD9268 Initialization****************************/
 void Init_AD9268() {
-    HAL_SPI_Init(&hspi1);
-
+		//HAL_SPI_Init(&hspi1);
+		//读取芯片ID，ID默认值0X32
+		SPI1_ReadBytes(0x01,SPI_RxBuf);
+		
+	
     // 配置寄存器0x0014，写入数据格式为二进制补码输出
     AD9268_WriteByte(0x14, (unsigned char[]){0x01}, 1);
     AD9268_WriteByte(0x14, (unsigned char[]){0x01}, 1);
-//		SPI1_ReadBytes(0x14,SPI_RxBuf);
+		SPI1_ReadBytes(0x14,SPI_RxBuf);
 
     // 启用抖动模式，相当于添加一个随机的DAC模拟信号量
     AD9268_WriteByte(0x30, (unsigned char[]){0x10}, 1);
+		SPI1_ReadBytes(0x30,SPI_RxBuf);
 		
     // 设置测试模式为0x000D，默认值0x00，普通ADC
     AD9268_WriteByte(0x0D, (unsigned char[]){0x00}, 1);
-
+		SPI1_ReadBytes(0x0D,SPI_RxBuf);
+		
     // 电源模式设置为默认值 0x80
     AD9268_WriteByte(0x08, (unsigned char[]){0x80}, 1);
-
+		SPI1_ReadBytes(0x08,SPI_RxBuf);
+		
     // 选择ADC通道，默认值0x03，两个ADC都激活
     AD9268_WriteByte(0x05, (unsigned char[]){0x03}, 1);
-
+		SPI1_ReadBytes(0x05,SPI_RxBuf);
+		
     // 将延迟设置为 2258ps
     AD9268_WriteByte(0x17, (unsigned char[]){0x1C}, 1);
-
+		SPI1_ReadBytes(0x17,SPI_RxBuf);
+		
     // 直到将0x01写入地址0xFF，发出传输命令，
     // 设置传输位，寄存器开始更新
+		// 寄存器写完0x01写完自动清零
     AD9268_WriteByte(0xFF, (unsigned char[]){0x01}, 1);
+		SPI1_ReadBytes(0xFF,SPI_RxBuf);
+
 }
 
 

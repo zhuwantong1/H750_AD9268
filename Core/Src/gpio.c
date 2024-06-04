@@ -96,18 +96,18 @@ void MX_GPIO_Init(void)
 
   HAL_NVIC_SetPriority(EXTI9_5_IRQn, 1, 1);
   HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-
+	
 }
 
 /* USER CODE BEGIN 2 */
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	if(Data_Counter <=50000)
+	if(Data_Counter <=70000)
 	{
 		HAL_NVIC_DisableIRQ(EXTI9_5_IRQn);
 	}
-	else if (GPIO_Pin == GPIO_PIN_6&&Data_Counter >50000)/* 这里捕捉adc_clk */
+	else if (GPIO_Pin == GPIO_PIN_6&&Data_Counter >70000)/* 这里捕捉adc_clk */
 	{
 			// 处理GPIO_PIN_6的中断事件
 			/** 捕获ADC_clk，此处归零,来丿个就弿始一个周期，当pl拉高时结束，pl圿74clk计数刿16的时候拉髿**/
