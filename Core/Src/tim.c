@@ -23,6 +23,7 @@
 /* USER CODE BEGIN 0 */
 #include "stdio.h"
 #include "usart.h"
+#include "AD9268.h"
 int Data_Counter = 0;
 
 
@@ -388,10 +389,13 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 			else if(Data_Counter >= 1&&Data_Counter<=16)
 			{
 				  HAL_GPIO_WritePin(GPIOB, PL_Pin, GPIO_PIN_SET);
+					delay_500ns();
+				  /* 有必要在这里延时一下，或处理一下，不要拉高马上捕获了，第一位有概率会捕获错误 */
 					if(Data_Counter<=8)
 					{
 						  //printf("Data_Counter = %d\r\n", 8-Data_Counter);
 							INTERRUPT_FLAG_TIMER3[8-Data_Counter] = HAL_GPIO_ReadPin(DATA_S_GPIO_Port, DATA_S_Pin);
+						
 					}
 					else if(Data_Counter>8)
 					{

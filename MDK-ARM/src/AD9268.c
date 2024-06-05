@@ -143,3 +143,18 @@ void delay_us(__IO uint32_t delay)
         delay -= temp;
     }
 }
+/****  ns级别的延时  ****/
+void delay_500ns(void) {
+    // 100 MHz CPU时钟周期为10纳秒
+    // 500纳秒 / 10纳秒 = 50个CPU周期
+	
+	
+	  /*
+	     480M,周期为1/480us
+	  */
+    for (int i = 0; i < 2; i++) {
+        __asm("nop");
+    }
+}
+
+

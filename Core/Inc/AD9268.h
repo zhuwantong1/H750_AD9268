@@ -11,4 +11,5 @@
 void Init_AD9268();
 void AD9268_WriteByte(unsigned char RegAddr, unsigned char *WriteBuf, unsigned char Len);
 void delay_us(__IO uint32_t delay);
+void delay_500ns(void);
 #endif //H750_SPI_AD9268_AD9268_H
