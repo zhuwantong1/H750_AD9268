@@ -76,7 +76,7 @@ void Init_AD9268() {
 		SPI1_ReadBytes(0x01,SPI_RxBuf);
 		
 	
-    // 配置寄存器0x0014，写入数据格式为二进制补码输出
+    // 配置寄存器0x0014，写入数据格式为二进制补码输出，此时的输出变量应该是带符号的16位变量
     AD9268_WriteByte(0x14, (unsigned char[]){0x01}, 1);
     AD9268_WriteByte(0x14, (unsigned char[]){0x01}, 1);
 		SPI1_ReadBytes(0x14,SPI_RxBuf);
@@ -152,7 +152,7 @@ void delay_500ns(void) {
 	  /*
 	     480M,周期为1/480us
 	  */
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 5; i++) {
         __asm("nop");
     }
 }
