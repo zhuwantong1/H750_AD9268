@@ -152,7 +152,7 @@ void delay_500ns(void) {
 	  /*
 	     480M,周期为1/480us
 	  */
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 2; i++) {
         __asm("nop");
     }
 }

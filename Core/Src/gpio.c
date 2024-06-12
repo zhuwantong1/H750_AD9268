@@ -22,10 +22,7 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN 0 */
-extern int Data_Counter;
-extern uint8_t Set_Count_Flag;
 
-extern TIM_HandleTypeDef htim4;
 /* USER CODE END 0 */
 
 /*----------------------------------------------------------------------------*/
@@ -47,16 +44,15 @@ void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOE_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, PL_Pin|LED_Pin, GPIO_PIN_RESET);
+//  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = SPI1_CS_Pin;
@@ -65,63 +61,31 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   HAL_GPIO_Init(SPI1_CS_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PA6 */
-  GPIO_InitStruct.Pin = GPIO_PIN_6;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+//  /*Configure GPIO pin : PtPin */
+//  GPIO_InitStruct.Pin = LED_Pin;
+//  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+//  GPIO_InitStruct.Pull = GPIO_NOPULL;
+//  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+//  HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PC4 */
-  GPIO_InitStruct.Pin = GPIO_PIN_4;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : PBPin PBPin */
-  GPIO_InitStruct.Pin = PL_Pin|LED_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PtPin */
-  GPIO_InitStruct.Pin = DATA_S_Pin;
+  /*Configure GPIO pins : PBPin PBPin PBPin PBPin
+                           PBPin PBPin PBPin PBPin
+                           PBPin PBPin PBPin PBPin
+                           PBPin PBPin PBPin PBPin */
+  GPIO_InitStruct.Pin = PB8_Pin|PB9_Pin|PB10_Pin|PB11_Pin
+                          |PB12_Pin|PB13_Pin|PB14_Pin|PB15_Pin
+                          |PB0_Pin|PB1_Pin|PB2_Pin|PB3_Pin
+                          |PB4_Pin|PB5_Pin|PB6_Pin|PB7_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(DATA_S_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI4_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
-
-  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 1, 1);
-  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-	
 }
 
 /* USER CODE BEGIN 2 */
 
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-	if(Data_Counter <=5000)
-	{
-		HAL_NVIC_DisableIRQ(EXTI9_5_IRQn);
-	}
-	else if (GPIO_Pin == GPIO_PIN_6&&Data_Counter >5000)/* 这里捕捉adc_clk */
-	{
-			// 处理GPIO_PIN_6的中断事件
-			/** 捕获ADC_clk，此处归零,来丿个就弿始一个周期，当pl拉高时结束，pl圿74clk计数刿16的时候拉髿**/
-		//HAL_TIM_IC_Stop_IT(&htim4, TIM_CHANNEL_1);
-		Set_Count_Flag=0;	
-		Data_Counter=-1;
-		//HAL_GPIO_WritePin(GPIOB, PL_Pin, GPIO_PIN_RESET);//第一个上升沿先拉低，开始传输数据
-		//HAL_TIM_IC_Start_IT(&htim4, TIM_CHANNEL_1); 	
-		//printf("Set_Count_Flag_gpio %d \r\n",Set_Count_Flag);
-	}
-	else 
-	{
-		HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-	}
-		
-}
+//void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+//{
+//		
+//}
 /* USER CODE END 2 */
