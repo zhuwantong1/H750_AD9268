@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -115,15 +116,19 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USART1_UART_Init();
-  MX_TIM1_Init();
+  MX_DMA_Init();
   MX_TIM2_Init();
+  MX_USART1_UART_Init();
+  
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
+		SCB->CACR|=1<<2; //强制 D-Cache 透写,如不�?�?,实际使用中可能遇到各种问�?
 		Init_AD9268();
-		HAL_Delay(10);
+		HAL_Delay(100);
     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 
+
+	MX_TIM1_Init();
 
 
 
@@ -138,10 +143,17 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
+
+		
+//		HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+//		HAL_Delay(500);
+//		HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+//		HAL_Delay(500);
+//		printf("123");
 //			__disable_irq();//此时不能被中断，count不能计数，进行数据处�?
 //      Parallel_to_Serial();		  
 //			__enable_irq();
-
+//进行AD9268并口获取数据以及采集代码硬件和软件代码的测试
   }
   /* USER CODE END 3 */
 }

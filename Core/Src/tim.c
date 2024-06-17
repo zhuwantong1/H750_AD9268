@@ -113,7 +113,7 @@ void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 4-1;
+  htim2.Init.Prescaler = 2-1;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 3-1;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -189,6 +189,10 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
   /* USER CODE END TIM2_MspInit 0 */
     /* TIM2 clock enable */
     __HAL_RCC_TIM2_CLK_ENABLE();
+
+    /* TIM2 interrupt Init */
+    HAL_NVIC_SetPriority(TIM2_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(TIM2_IRQn);
   /* USER CODE BEGIN TIM2_MspInit 1 */
 
   /* USER CODE END TIM2_MspInit 1 */
@@ -251,6 +255,9 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
   /* USER CODE END TIM2_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_TIM2_CLK_DISABLE();
+
+    /* TIM2 interrupt Deinit */
+    HAL_NVIC_DisableIRQ(TIM2_IRQn);
   /* USER CODE BEGIN TIM2_MspDeInit 1 */
 
   /* USER CODE END TIM2_MspDeInit 1 */
@@ -259,17 +266,22 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 
 /* USER CODE BEGIN 1 */
 
-uint8_t INTERRUPT_FLAG_TIMER3 [16];
-uint16_t ans=1;
-uint8_t Set_Count_Flag=0;
+
+int16_t ans[1];
+
 uint8_t buffer[sizeof(ans)];  // 用于存储 int 型变量的字节数组
+uint8_t data[] = {0x0A, 0x0D};
+extern DMA_HandleTypeDef hdma_usart1_tx;
 
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 {
 	if (htim->Instance == TIM1 && htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
 	{
-		ans=GPIOB->IDR;
-		printf("%d\r\n",ans);
+		ans[0]=GPIOD->IDR;
+		
+//		HAL_UART_Transmit_DMA(&huart1, (uint8_t*)ans, 2);
+//		HAL_UART_Transmit_DMA(&huart1, data, 2);
+		printf("%d\r\n",ans[0]);
 //		Data_Counter++;
 //		if(Data_Counter==100)
 //		{

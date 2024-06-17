@@ -38,6 +38,7 @@ h750_spi_ad9268\main.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h
 h750_spi_ad9268\main.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h
 h750_spi_ad9268\main.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h
 h750_spi_ad9268\main.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h
+h750_spi_ad9268\main.o: ../Core/Inc/dma.h
 h750_spi_ad9268\main.o: ../Core/Inc/spi.h
 h750_spi_ad9268\main.o: ../Core/Inc/tim.h
 h750_spi_ad9268\main.o: ../Core/Inc/usart.h
