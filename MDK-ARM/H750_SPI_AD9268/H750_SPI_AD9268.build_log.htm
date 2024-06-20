@@ -21,20 +21,28 @@ Target DLL:      CMSIS_AGDI.dll V1.33.15.0
 Dialog DLL:      TCM.DLL V1.56.4.0
  
 <h2>Project:</h2>
-D:\cubecode\H750_SPI_AD9268\MDK-ARM\H750_SPI_AD9268.uvprojx
-Project File Date:  06/17/2024
+D:\cubecode\H750_AD9268-16bit\H750_AD9268\MDK-ARM\H750_SPI_AD9268.uvprojx
+Project File Date:  06/20/2024
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'D:\keil_v5\ARM\ARMCC\Bin'
 Build target 'H750_SPI_AD9268'
-compiling tim.c...
+compiling AD9268.c...
 ../Core/Inc/AD9268.h(11): warning:  #1295-D: Deprecated declaration Init_AD9268 - give arg types
   void Init_AD9268();
-../Core/Src/tim.c: 1 warning, 0 errors
+src\AD9268.c(22): warning:  #223-D: function "printf" declared implicitly
+          printf("SPI Transmit Failed\r\n");
+src\AD9268.c(37): warning:  #223-D: function "printf" declared implicitly
+              printf("0x%02X ", ReadBuf[i]);
+src\AD9268.c(39): warning:  #223-D: function "printf" declared implicitly
+          printf("\r\n");
+src\AD9268.c(42): warning:  #223-D: function "printf" declared implicitly
+          printf("SPI Read Failed\r\n");
+src\AD9268.c: 5 warnings, 0 errors
 linking...
-Program Size: Code=33628 RO-data=760 RW-data=40 ZI-data=1856  
+Program Size: Code=34100 RO-data=760 RW-data=36 ZI-data=35852  
 FromELF: creating hex file...
-"H750_SPI_AD9268\H750_SPI_AD9268.axf" - 0 Error(s), 1 Warning(s).
+"H750_SPI_AD9268\H750_SPI_AD9268.axf" - 0 Error(s), 5 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -57,7 +65,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.6.0
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

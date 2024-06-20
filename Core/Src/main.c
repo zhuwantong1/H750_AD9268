@@ -77,6 +77,7 @@ void PeriphCommonClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 extern  int Data_Counter;
+extern int16_t ans[17000];
 /* USER CODE END 0 */
 
 /**
@@ -154,6 +155,14 @@ int main(void)
 //      Parallel_to_Serial();		  
 //			__enable_irq();
 //进行AD9268并口获取数据以及采集代码硬件和软件代码的测试
+				
+			__disable_irq();//此时不能被中断，count不能计数，进行数据处琿
+      for(int i = 0;i<160;i++)
+			{
+				printf("%d\r\n",ans[i]);
+			}
+			HAL_NVIC_EnableIRQ(TIM1_CC_IRQn);
+			__enable_irq();
   }
   /* USER CODE END 3 */
 }

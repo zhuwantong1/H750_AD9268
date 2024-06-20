@@ -267,21 +267,31 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 /* USER CODE BEGIN 1 */
 
 
-int16_t ans[1];
-
-uint8_t buffer[sizeof(ans)];  // 用于存储 int 型变量的字节数组
+int8_t ans_h;
+uint8_t ans_l;
+int16_t ans[17000];
 uint8_t data[] = {0x0A, 0x0D};
-extern DMA_HandleTypeDef hdma_usart1_tx;
-
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 {
 	if (htim->Instance == TIM1 && htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
 	{
-		ans[0]=GPIOD->IDR;
+		ans_h = GPIOD->IDR>>8;
+		ans_l = GPIOD->IDR;
+		ans[Data_Counter] = ans_h<<8;
+		ans[Data_Counter] = ans[Data_Counter] + ans_l;
+		if(Data_Counter<160)
+		{
+			Data_Counter++;
+		}
+		else 
+		{
+			Data_Counter=0;
+			HAL_NVIC_DisableIRQ(TIM1_CC_IRQn);
+		}
 		
 //		HAL_UART_Transmit_DMA(&huart1, (uint8_t*)ans, 2);
 //		HAL_UART_Transmit_DMA(&huart1, data, 2);
-		printf("%d\r\n",ans[0]);
+//		printf("%d\r\n",ans[0]);
 //		Data_Counter++;
 //		if(Data_Counter==100)
 //		{
