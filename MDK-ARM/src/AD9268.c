@@ -5,7 +5,11 @@ unsigned char SPI_TxBuf[256];
 unsigned char SPI_RxBuf[16];
 unsigned char SPI1_ReadBytes(unsigned char RegAddr, unsigned char *ReadBuf)
 {
+<<<<<<< HEAD
     HAL_StatusTypeDef status;
+=======
+       HAL_StatusTypeDef status;
+>>>>>>> a7570a9da818a1e96aae786e2fd772e7d4c16f5e
 
     // 首先使能片选
     CS_ADC_LOW();
@@ -42,7 +46,11 @@ unsigned char SPI1_ReadBytes(unsigned char RegAddr, unsigned char *ReadBuf)
         printf("SPI Read Failed\r\n");
     }
 
+<<<<<<< HEAD
     return ReadBuf[0];
+=======
+    return 0;
+>>>>>>> a7570a9da818a1e96aae786e2fd772e7d4c16f5e
     
     
 }
@@ -71,6 +79,7 @@ void AD9268_WriteByte(unsigned char RegAddr, unsigned char *WriteBuf, unsigned c
 
 /*************************AD9268 Initialization****************************/
 void Init_AD9268() {
+<<<<<<< HEAD
 	
 		//配置MSB优先输出
 		AD9268_WriteByte(0x00, (unsigned char[]){0x18}, 1);
@@ -98,11 +107,43 @@ void Init_AD9268() {
 		
     // 将延迟设置为 2258ps
     AD9268_WriteByte(0x17, (unsigned char[]){0x1C}, 1);
+=======
+		//HAL_SPI_Init(&hspi1);
+		//读取芯片ID，ID默认值0X32
+		SPI1_ReadBytes(0x01,SPI_RxBuf);
+		
+	
+    // 配置寄存器0x0014，写入数据格式为二进制补码输出，此时的输出变量应该是带符号的16位变量
+    AD9268_WriteByte(0x14, (unsigned char[]){0x01}, 1);
+    AD9268_WriteByte(0x14, (unsigned char[]){0x01}, 1);
+		SPI1_ReadBytes(0x14,SPI_RxBuf);
+
+    // 启用抖动模式，相当于添加一个随机的DAC模拟信号量
+    AD9268_WriteByte(0x30, (unsigned char[]){0x10}, 1);
+		SPI1_ReadBytes(0x30,SPI_RxBuf);
+		
+    // 设置测试模式为0x000D，默认值0x00，普通ADC
+    AD9268_WriteByte(0x0D, (unsigned char[]){0x00}, 1);
+		SPI1_ReadBytes(0x0D,SPI_RxBuf);
+		
+    // 电源模式设置为默认值 0x80
+    AD9268_WriteByte(0x08, (unsigned char[]){0x80}, 1);
+		SPI1_ReadBytes(0x08,SPI_RxBuf);
+		
+    // 选择ADC通道，默认值0x03，两个ADC都激活
+    AD9268_WriteByte(0x05, (unsigned char[]){0x03}, 1);
+		SPI1_ReadBytes(0x05,SPI_RxBuf);
+		
+    // 将延迟设置为 2258ps
+    AD9268_WriteByte(0x17, (unsigned char[]){0x1C}, 1);
+		SPI1_ReadBytes(0x17,SPI_RxBuf);
+>>>>>>> a7570a9da818a1e96aae786e2fd772e7d4c16f5e
 		
     // 直到将0x01写入地址0xFF，发出传输命令，
     // 设置传输位，寄存器开始更新
 		// 寄存器写完0x01写完自动清零
     AD9268_WriteByte(0xFF, (unsigned char[]){0x01}, 1);
+<<<<<<< HEAD
 
 
 		
@@ -153,10 +194,18 @@ void Init_AD9268() {
 			AD9268_WriteByte(0xFF, (unsigned char[]){0x01}, 1);
 			HAL_Delay(50);
 		}	
+=======
+		SPI1_ReadBytes(0xFF,SPI_RxBuf);
+
+>>>>>>> a7570a9da818a1e96aae786e2fd772e7d4c16f5e
 }
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> a7570a9da818a1e96aae786e2fd772e7d4c16f5e
 /***************微妙级延迟***************/
 void delay_us(__IO uint32_t delay)
 {

@@ -32,7 +32,10 @@ int time=0;
 
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
+<<<<<<< HEAD
 TIM_HandleTypeDef htim3;
+=======
+>>>>>>> a7570a9da818a1e96aae786e2fd772e7d4c16f5e
 
 /* TIM1 init function */
 void MX_TIM1_Init(void)
@@ -152,6 +155,7 @@ void MX_TIM2_Init(void)
   HAL_TIM_MspPostInit(&htim2);
 
 }
+<<<<<<< HEAD
 /* TIM3 init function */
 void MX_TIM3_Init(void)
 {
@@ -196,6 +200,8 @@ void MX_TIM3_Init(void)
   /* USER CODE END TIM3_Init 2 */
 
 }
+=======
+>>>>>>> a7570a9da818a1e96aae786e2fd772e7d4c16f5e
 
 void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
 {
@@ -216,7 +222,11 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
     GPIO_InitStruct.Pin = GPIO_PIN_9;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
+<<<<<<< HEAD
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+=======
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+>>>>>>> a7570a9da818a1e96aae786e2fd772e7d4c16f5e
     GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;
     HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
@@ -243,6 +253,7 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
   /* USER CODE END TIM2_MspInit 1 */
   }
 }
+<<<<<<< HEAD
 
 void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef* tim_encoderHandle)
 {
@@ -276,6 +287,8 @@ void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef* tim_encoderHandle)
   /* USER CODE END TIM3_MspInit 1 */
   }
 }
+=======
+>>>>>>> a7570a9da818a1e96aae786e2fd772e7d4c16f5e
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef* timHandle)
 {
 
@@ -342,6 +355,7 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
   }
 }
 
+<<<<<<< HEAD
 void HAL_TIM_Encoder_MspDeInit(TIM_HandleTypeDef* tim_encoderHandle)
 {
 
@@ -373,6 +387,14 @@ void HAL_TIM_Encoder_MspDeInit(TIM_HandleTypeDef* tim_encoderHandle)
 int8_t ans_h;
 uint8_t ans_l;
 int16_t ans[17000];
+=======
+/* USER CODE BEGIN 1 */
+
+
+int16_t ans[1];
+
+uint8_t buffer[sizeof(ans)];  // 用于存储 int 型变量的字节数组
+>>>>>>> a7570a9da818a1e96aae786e2fd772e7d4c16f5e
 uint8_t data[] = {0x0A, 0x0D};
 extern DMA_HandleTypeDef hdma_usart1_tx;
 
@@ -380,6 +402,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 {
 	if (htim->Instance == TIM1 && htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
 	{
+<<<<<<< HEAD
 		ans_h = GPIOD->IDR>>8;
 		ans_l = GPIOD->IDR;
 		ans[Data_Counter] = ans_h<<8;
@@ -399,6 +422,13 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 //		HAL_UART_Transmit_DMA(&huart1, data, 2);
 //		printf("%d\r\n",ans[0]);
 //		printf("%d\r\n",ans[1]);
+=======
+		ans[0]=GPIOD->IDR;
+		
+//		HAL_UART_Transmit_DMA(&huart1, (uint8_t*)ans, 2);
+//		HAL_UART_Transmit_DMA(&huart1, data, 2);
+		printf("%d\r\n",ans[0]);
+>>>>>>> a7570a9da818a1e96aae786e2fd772e7d4c16f5e
 //		Data_Counter++;
 //		if(Data_Counter==100)
 //		{
