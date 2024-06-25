@@ -39,5 +39,8 @@ h750_spi_ad9268\parallel_to_serial.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h
 h750_spi_ad9268\parallel_to_serial.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h
 h750_spi_ad9268\parallel_to_serial.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h
 h750_spi_ad9268\parallel_to_serial.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h
+h750_spi_ad9268\parallel_to_serial.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd.h
+h750_spi_ad9268\parallel_to_serial.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_usb.h
+h750_spi_ad9268\parallel_to_serial.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h
 h750_spi_ad9268\parallel_to_serial.o: D:\keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 h750_spi_ad9268\parallel_to_serial.o: ../Core/Inc/usart.h

@@ -18,10 +18,10 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "dma.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
+#include "usb_device.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -31,6 +31,9 @@
 #include "Parallel_to_Serial.h"
 #include "stdio.h"
 #include <stdint.h>
+
+#include "usbd_cdc_if.h"
+#include <stdlib.h>
 int fputc(int ch, FILE *f)
 {
   HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 0xffff);
@@ -65,6 +68,14 @@ int fgetc(FILE *f)
 
 /* USER CODE BEGIN PV */
 
+int    enc1;
+int    enc2;
+int  average_value=0;
+
+int Measure_freq=0;
+int Measure_step=0;
+uint16_t ev_co[1520];
+uint16_t adc_array[1520];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -76,7 +87,10 @@ void PeriphCommonClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+extern USBD_HandleTypeDef hUsbDeviceHS;
 extern  int Data_Counter;
+extern int16_t ans[17000];
+uint8_t		buf[2900];
 /* USER CODE END 0 */
 
 /**
@@ -116,20 +130,20 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_TIM2_Init();
   MX_USART1_UART_Init();
-  
   MX_SPI1_Init();
+  MX_TIM3_Init();
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
-		SCB->CACR|=1<<2; //强制 D-Cache 透写,如不�?�?,实际使用中可能遇到各种问�?
-		Init_AD9268();
-		HAL_Delay(100);
-    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+	SCB->CACR|=1<<2; 
+	Init_AD9268();
+	HAL_Delay(100);
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 
 
-	MX_TIM1_Init();
-
+//	MX_TIM1_Init();
+	HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
 
 
 
@@ -142,18 +156,33 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
-
-		
-//		HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
-//		HAL_Delay(500);
-//		HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
-//		HAL_Delay(500);
-//		printf("123");
-//			__disable_irq();//此时不能被中断，count不能计数，进行数据处�?
-//      Parallel_to_Serial();		  
-//			__enable_irq();
-//进行AD9268并口获取数据以及采集代码硬件和软件代码的测试
+		Measure_step=0;
+		Measure_freq=0;
+		for(int K=0;K<1195;K+=6)//先处�?300步，得到300步的数据
+		{
+				enc1 = __HAL_TIM_GET_COUNTER(&htim3);//获取定时器的�?
+				enc2 = enc1;
+				//变量Measure_step记录走了多少步，变量Measure_freq记录测了多少次，�?步测N�?
+				while(abs(enc2-enc1)==0)
+				//enc1的�?�在�?步里面是不变的，enc2的�?�是实时获取�?,不管enc2是正还是负数，取绝对值才�?
+				{
+						ev_co[Measure_freq]=GPIOD->IDR;
+						Measure_freq++;
+						//�?格最多采�?300次adc，如果adc的最大采样率�?3M的话
+						enc2 = __HAL_TIM_GET_COUNTER(&htim3);//获取定时器的�?
+						if(Measure_freq>=400)
+						{
+								Measure_freq=400;
+						}	
+				}
+				adc_array[Measure_step]=calculateMean(ev_co,Measure_freq);
+				//平均采集Measure_freq次之后的结果，放到adc_array中，第一步放到adc_arrray[0]中，第二步放到adc_array[1]�?
+				average_value = adc_array[Measure_step];//如果不处理就�?步都不平�?
+				Measure_step++;
+				Measure_freq=0;
+				data_shift(K);
+		}
+		CDC_Transmit_HS(buf, 1200);
   }
   /* USER CODE END 3 */
 }
@@ -185,10 +214,12 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI48|RCC_OSCILLATORTYPE_HSI
+                              |RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSIState = RCC_HSI_DIV1;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.HSI48State = RCC_HSI48_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 2;
@@ -243,6 +274,26 @@ void PeriphCommonClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
+void data_shift(int j)
+{
+		buf[j] = (uint8_t)(average_value & 0xFF);
+		buf[j+1]   = (uint8_t)((average_value >> 8) & 0xFF);
+		buf[j+5] = 0xFF;	
+		buf[j+4] = 0x0D;
+		buf[j+2] = (uint8_t)(enc2 & 0xFF);
+		buf[j+3] = (uint8_t)((enc2 >> 8) & 0xFF);
+//		buf[j+4] = (uint8_t)((enc2 >> 16) & 0xFF);
+//		buf[j+5] = (uint8_t)((enc2 >> 24) & 0xFF);
+		
+}
+uint16_t calculateMean(uint16_t *data, int size) {
+    int sum = 0;
+
+    for (int i = 0; i < size; i++) {
+        sum += data[i];
+    }
+    return sum / size;
+}
 /* USER CODE END 4 */
 
 /**
