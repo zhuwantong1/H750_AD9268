@@ -54,7 +54,7 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 uint16_t calculateMean(uint16_t *data, int size);
-void data_shift(int j);
+void data_shift(int j,int k);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
