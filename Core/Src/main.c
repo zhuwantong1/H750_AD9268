@@ -68,19 +68,14 @@ int fgetc(FILE *f)
 
 /* USER CODE BEGIN PV */
 
-uint16_t	adc_value;
-int    enc1,enc0=6000;
+int    enc1;
 int    enc2;
-uint8_t		buf[2900];
-uint8_t		buf1[29]={0X0A,0X0A,0X0A,0X0A,0X0A,0X0A,0X0A,0X0A};
-int  adc_array_size= 1520;
-int  average_value[100][400];
-int enc3[100][400];
-uint16_t adc_array[1520];
-uint16_t ev_co[1520];
-int measure_f=0;
-int track_array[400];
+int  average_value=0;
 
+int Measure_freq=0;
+int Measure_step=0;
+uint16_t ev_co[1520];
+uint16_t adc_array[1520];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -95,7 +90,7 @@ void PeriphCommonClock_Config(void);
 extern USBD_HandleTypeDef hUsbDeviceHS;
 extern  int Data_Counter;
 extern int16_t ans[17000];
-
+uint8_t		buf[2900];
 /* USER CODE END 0 */
 
 /**
@@ -161,39 +156,33 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		  for(int j=0;j<100;j++){
-					 
-					 	measure_f=0;
-            enc1 = __HAL_TIM_GET_COUNTER(&htim3);//��ȡ��ʱ����ֵ
-
-            enc2 = enc1;
-						 while(abs(enc2-enc1)==0)               
-            {
-								
-                average_value[j][measure_f]=GPIOD->IDR;
-                enc3[j][measure_f] = __HAL_TIM_GET_COUNTER(&htim3);//��ȡ��ʱ����ֵ														  
-								enc2=enc3[j][measure_f];
-								measure_f++;
-							  if(measure_f>=300)
-								{
-									measure_f=300;
-								}
-
-            }
-						track_array[j]=measure_f;
-					 }
-           for(int k=0;k<100;k++){
-						for(int i=0;i<8*track_array[k];i+=8)
+		Measure_step=0;
+		Measure_freq=0;
+		for(int K=0;K<1593;K+=8)//先处�?300步，得到300步的数据
+		{
+				enc1 = __HAL_TIM_GET_COUNTER(&htim3);//获取定时器的�?
+				enc2 = enc1;
+				//变量Measure_step记录走了多少步，变量Measure_freq记录测了多少次，�?步测N�?
+				while(abs(enc2-enc1)==0)
+				//enc1的�?�在�?步里面是不变的，enc2的�?�是实时获取�?,不管enc2是正还是负数，取绝对值才�?
+				{
+						ev_co[Measure_freq]=GPIOD->IDR;
+						Measure_freq++;
+						//�?格最多采�?300次adc，如果adc的最大采样率�?3M的话
+						enc2 = __HAL_TIM_GET_COUNTER(&htim3);//获取定时器的�?
+						if(Measure_freq>=400)
 						{
-						
-							data_shift(i,k);
-						
-						}
-						CDC_Transmit_HS(buf, 8*track_array[k]);
-						HAL_Delay(2);
-					 }
-						HAL_Delay(2);
-
+								Measure_freq=400;
+						}	
+				}
+				adc_array[Measure_step]=calculateMean(ev_co,Measure_freq);
+				//平均采集Measure_freq次之后的结果，放到adc_array中，第一步放到adc_arrray[0]中，第二步放到adc_array[1]�?
+				average_value = adc_array[Measure_step];//如果不处理就�?步都不平�?
+				Measure_step++;
+				Measure_freq=0;
+				data_shift(K);
+		}
+		CDC_Transmit_HS(buf, 1600);
   }
   /* USER CODE END 3 */
 }
@@ -285,16 +274,17 @@ void PeriphCommonClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-
-void data_shift(int j,int k)
+void data_shift(int j)
 {
-		buf[j] = (uint8_t)(average_value[k][(j+1)/8] & 0xFF);
-		buf[j+1]   = (uint8_t)((average_value[k][(j+1)/8]  >> 8) & 0xFF);
+		buf[j] = (uint8_t)(average_value & 0xFF);
+		buf[j+1]   = (uint8_t)((average_value >> 8) & 0xFF);
 		buf[j+7] = 0xFF;	
 		buf[j+6] = 0x0D;
-		buf[j+2] = (uint8_t)(enc3[k][(j+1)/8] & 0xFF);
-		buf[j+3] = (uint8_t)((enc3[k][(j+1)/8] >> 8) & 0xFF);
-		if(enc3[k][(j+1)/8]>30000)
+		buf[j+2] = (uint8_t)(enc2 & 0xFF);
+		buf[j+3] = (uint8_t)((enc2 >> 8) & 0xFF);
+//		buf[j+4] = (uint8_t)((enc2 >> 16) & 0xFF);
+//		buf[j+5] = (uint8_t)((enc2 >> 24) & 0xFF);
+		if(enc2>50000)
 		{
 			buf[j+4] = 0xff;
 		  buf[j+5] = 0xff;
@@ -303,9 +293,9 @@ void data_shift(int j,int k)
 			buf[j+4] = 0x00;
 		  buf[j+5] = 0x00;
 		}
+  	
 		
 }
-
 uint16_t calculateMean(uint16_t *data, int size) {
     int sum = 0;
 
